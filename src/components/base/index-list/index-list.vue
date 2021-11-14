@@ -24,7 +24,8 @@
     </div>
     <div
       class="shortcut"
-      @touchstart.stop.prevent="onShortcutTouchStart">
+      @touchstart.stop.prevent="onShortcutTouchStart"
+      @touchmove.stop.prevent="onShortcutTouchMove">
       <ul>
         <li
           v-for="(item,index) in shortcutList"
@@ -54,7 +55,7 @@ export default {
   },
   setup(props) {
     const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } = useFixed(props)
-    const { shortcutList, onShortcutTouchStart, scrollRef } = useShortcut(props, groupRef)
+    const { shortcutList, onShortcutTouchStart, scrollRef, onShortcutTouchMove } = useShortcut(props, groupRef)
     return {
       groupRef,
       onScroll,
@@ -63,7 +64,8 @@ export default {
       shortcutList,
       currentIndex,
       onShortcutTouchStart,
-      scrollRef
+      scrollRef,
+      onShortcutTouchMove
     }
   }
 }
