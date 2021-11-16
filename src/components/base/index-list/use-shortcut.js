@@ -22,6 +22,9 @@ export default function useShortcut(props, groupRef) {
     scrollTo(anchorIndex)
   }
   function scrollTo(index) {
+    if (isNaN(index)) {
+      return
+    }
     index = Math.max(0, Math.min(shortcutList.value.length - 1, index))
     const targetEl = groupRef.value.children[index]
     const scroll = scrollRef.value.scroll
