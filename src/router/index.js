@@ -15,7 +15,13 @@ const routes = [
   },
   {
     path: '/singer',
-    component: () => import('@/views/singer')
+    component: () => import('@/views/singer'),
+    children: [
+      {
+        path: ':id',
+        component: () => import('@/views/singer-detail')
+      }
+    ]
   },
   {
     path: '/top-list',
