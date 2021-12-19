@@ -4,6 +4,7 @@
 
 <script>
 import { getSingerDetail } from '@/service/singer'
+import { } from '@/service/song'
 export default {
   name: 'singer-detail',
   props: {
