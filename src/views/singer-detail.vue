@@ -1,10 +1,13 @@
 <template>
-  <div class="singer-detail"></div>
+  <div class="singer-detail">
+    <music-list :songs="songs" :title="title" :pic="pic" :loading="loading"></music-list>
+  </div>
 </template>
 
 <script>
 import { getSingerDetail } from '@/service/singer'
-import { } from '@/service/song'
+import { processSongs } from '@/service/song'
+import MusicList from '@/components/music-list/music-list.vue'
 export default {
   name: 'singer-detail',
   props: {
@@ -13,9 +16,28 @@ export default {
       default: () => {}
     }
   },
+  data() {
+    return {
+      songs: [],
+      loading: true
+    }
+  },
+  components: {
+    MusicList
+  },
+  computed: {
+    pic() {
+      return this.singer && this.singer.pic
+    },
+    title() {
+      return this.singer && this.singer.name
+    }
+  },
   async created() {
     const result = await getSingerDetail(this.singer)
-    console.log(result)
+    const songs = await processSongs(result.songs)
+    this.songs = songs
+    this.loading = false
   }
 }
 </script>
