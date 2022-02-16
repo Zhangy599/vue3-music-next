@@ -11,7 +11,7 @@
         >
         <h2 class="title">{{group.title}}</h2>
         <ul>
-          <li v-for="item in group.list" :key="item.id" class="item">
+          <li v-for="item in group.list" :key="item.id" class="item" @click="onItemClick(item)">
             <img class="avatar" v-lazy="item.pic" alt="">
             <span class="name">{{item.name}}</span>
           </li>
@@ -47,15 +47,19 @@ export default {
   components: {
     Scroll
   },
+  emit: ['select'],
   props: {
     data: {
       type: Array,
       default: () => []
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } = useFixed(props)
     const { shortcutList, onShortcutTouchStart, scrollRef, onShortcutTouchMove } = useShortcut(props, groupRef)
+    const onItemClick = (item) => {
+      emit('select', item)
+    }
     return {
       groupRef,
       onScroll,
@@ -65,7 +69,8 @@ export default {
       currentIndex,
       onShortcutTouchStart,
       scrollRef,
-      onShortcutTouchMove
+      onShortcutTouchMove,
+      onItemClick
     }
   }
 }
