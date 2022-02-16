@@ -5,9 +5,9 @@
     </div>
     <h1 class="title">{{title}}</h1>
     <div class="bg-image" :style="bgImageStyle" ref="bgImageRef">
-      <div class="filter"></div>
+      <div class="filter" :style="filterStyle"></div>
     </div>
-    <scroll class="list" :style="scrollStyle" v-loading="loading">
+    <scroll class="list" :style="scrollStyle" v-loading="loading" :probeType="3" @scroll="onScroll">
       <div class="song-list-wrapper">
         <song-list :songs="songs"></song-list>
       </div>
@@ -18,6 +18,7 @@
 <script>
 import scroll from '../base/scroll/scroll.vue'
 import songList from '../base/song-list/song-list.vue'
+const RESERVED_HEIGHT = 40
 export default {
   components: { scroll, songList },
   name: 'music-list',
@@ -32,15 +33,37 @@ export default {
   },
   data() {
     return {
-      imageHeight: 0
+      imageHeight: 0,
+      scrollY: 0,
+      maxTranslateY: 0
     }
   },
   mounted() {
     this.imageHeight = this.$refs.bgImageRef.clientHeight
+    this.maxTranslateY = this.imageHeight - RESERVED_HEIGHT
   },
   computed: {
     bgImageStyle() {
+      const scrollY = this.scrollY
+      let zIndex = 0
+      let paddingTop = '70%'
+      let height = 0
+      let translateZ = 0
+      if (scrollY > this.maxTranslateY) {
+        zIndex = 10
+        paddingTop = 0
+        height = `${RESERVED_HEIGHT}px`
+        translateZ = 1
+      }
+      let scale = 1
+      if (scrollY < 0) {
+        scale = 1 + Math.abs(scrollY / this.imageHeight)
+      }
       return {
+        zIndex,
+        paddingTop,
+        height,
+        transform: `scale(${scale})translateZ(${translateZ}px)`,
         backgroundImage: `url(${this.pic})`
       }
     },
@@ -48,11 +71,26 @@ export default {
       return {
         top: `${this.imageHeight}px`
       }
+    },
+    filterStyle() {
+      let blur = 0
+      const scrollY = this.scrollY
+      const imageHeight = this.imageHeight
+      if (scrollY >= 0) {
+        blur = Math.min(this.maxTranslateY / imageHeight, scrollY / imageHeight) * 20
+      }
+
+      return {
+        backdropFilter: `blur(${blur}px)`
+      }
     }
   },
   methods: {
     goBack() {
       this.$router.back()
+    },
+    onScroll(pos) {
+      this.scrollY = -pos.y
     }
   }
 }
@@ -93,8 +131,6 @@ export default {
       width: 100%;
       transform-origin: top;
       background-size: cover;
-      padding-top: 70%;
-      height: 0;
       .play-btn-wrapper {
         position: absolute;
         bottom: 20px;
@@ -137,6 +173,7 @@ export default {
       bottom: 0;
       width: 100%;
       z-index: 0;
+      /* overflow: hidden; */
       .song-list-wrapper {
         padding: 20px 30px;
         background: $color-background;
