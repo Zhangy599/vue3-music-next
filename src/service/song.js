@@ -8,7 +8,7 @@ export function processSongs(songs) {
       return song.mid
     })
   }).then((result) => {
-    const map = result.map
+    const map = result?.map
     return songs.map((song) => {
       song.url = map[song.mid]
       return song
