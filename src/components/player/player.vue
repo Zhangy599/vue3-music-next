@@ -14,8 +14,8 @@
       <div class="middle">
         <div class="middle-l">
           <div class="cd-wrapper">
-            <div class="cd">
-              <img class="image" :class="cdCls" :src="currentSong.pic" alt="">
+            <div class="cd" ref="cdRef">
+              <img class="image" ref="cdImageRef" :class="cdCls" :src="currentSong.pic" alt="">
             </div>
           </div>
         </div>
@@ -101,7 +101,11 @@ export default {
       getFavoriteIcon,
       toggleFavorite
     } = useFavorite()
-    const { cdCls } = useCd()
+    const {
+      cdCls,
+      cdRef,
+      cdImageRef
+    } = useCd()
     // watch
     watch(currentSong, (newSong) => {
       if (!newSong.id || !newSong.url) {
@@ -248,7 +252,9 @@ export default {
       getFavoriteIcon,
       toggleFavorite,
       // cd
-      cdCls
+      cdCls,
+      cdRef,
+      cdImageRef
     }
   }
 }
