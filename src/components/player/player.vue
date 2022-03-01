@@ -1,5 +1,5 @@
 <template>
-  <div class="player">
+  <div class="player" v-show="playlist.length">
     <div class="normal-player" v-show="fullScreen">
       <div class="background">
         <img :src="currentSong.pic" alt="">
@@ -11,8 +11,10 @@
         <h1 class="title">{{ currentSong.name }}</h1>
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
-      <div class="middle">
-        <div class="middle-l">
+      <div class="middle" @touchstart.prevent="onMiddleTouchStart"
+                          @touchmove.prevent="onMiddleTouchMove"
+                          @touchend.prevent="onMiddleTouchEnd">
+        <div class="middle-l" :style="middleLStyle">
           <div class="cd-wrapper">
             <div class="cd" ref="cdRef">
               <img class="image" ref="cdImageRef" :class="cdCls" :src="currentSong.pic" alt="">
@@ -22,7 +24,7 @@
             <div class="playing-lyric">{{playingLyric}}</div>
           </div>
         </div>
-        <scroll class="middle-r" ref="lyricScrollRef">
+        <scroll class="middle-r" ref="lyricScrollRef" :style="middleRStyle">
           <div class="lyric-wrapper">
             <div v-if="currentLyric" ref="lyricListRef">
               <p class="text" :class="{'current': index === currentLineNum}"
@@ -38,6 +40,10 @@
         </scroll>
       </div>
       <div class="bottom">
+        <div class="dot-wrapper">
+          <span class="dot" :class="{'active': currentShow === 'cd'}"></span>
+          <span class="dot" :class="{'active': currentShow === 'lyric'}"></span>
+        </div>
         <div class="progress-wrapper">
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
@@ -65,6 +71,7 @@
         </div>
       </div>
     </div>
+    <mini-player />
     <audio ref="audioRef" @pause="pause" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
@@ -76,14 +83,17 @@ import useMode from './use-mode'
 import useFavorite from './use-favorite'
 import useCd from './use-cd'
 import useLyric from './use-lyric'
+import useMiddleInteractive from './use-middle-interactive'
 import ProgressBar from './progress-bar'
 import { formatTime } from '../../assets/js/util'
 import { PLAY_MODE } from '../../assets/js/constant'
 import Scroll from '../base/scroll/scroll'
+import MiniPlayer from './mini-player'
 
 export default {
   name: 'player',
   components: {
+    MiniPlayer,
     Scroll,
     ProgressBar
   },
@@ -139,6 +149,14 @@ export default {
       songReady,
       currentTime
     })
+    const {
+      currentShow,
+      middleLStyle,
+      middleRStyle,
+      onMiddleTouchStart,
+      onMiddleTouchMove,
+      onMiddleTouchEnd
+    } = useMiddleInteractive()
     // watch
     watch(currentSong, (newSong) => {
       if (!newSong.id || !newSong.url) {
@@ -275,6 +293,7 @@ export default {
       fullScreen,
       currentSong,
       playIcon,
+      playlist,
       goBack,
       togglePlay,
       pause,
@@ -304,7 +323,14 @@ export default {
       lyricScrollRef,
       lyricListRef,
       pureMusicLyric,
-      playingLyric
+      playingLyric,
+      // interactive
+      currentShow,
+      middleLStyle,
+      middleRStyle,
+      onMiddleTouchStart,
+      onMiddleTouchMove,
+      onMiddleTouchEnd
     }
   }
 }
