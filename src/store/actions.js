@@ -5,7 +5,7 @@ export function selectPlay({ commit, state }, { list, index }) {
   commit('setPlayMode', PLAY_MODE.sequence)
   commit('setSequenceList', list)
   commit('setPlayState', true)
-  commit('setFullSreen', true)
+  commit('setFullScreen', true)
   commit('setPlayList', list)
   commit('setCurrentIndex', index)
 }
@@ -15,7 +15,7 @@ export function randomPlay({ commit }, list) {
   commit('setPlayMode', PLAY_MODE.random)
   commit('setSequenceList', list)
   commit('setPlayState', true)
-  commit('setFullSreen', true)
+  commit('setFullScreen', true)
   commit('setPlayList', shuffle(list))
   commit('setCurrentIndex', 0)
 }

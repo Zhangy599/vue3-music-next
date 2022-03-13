@@ -184,7 +184,7 @@ export default {
 
     // methods
     function goBack() {
-      store.commit('setFullSreen', false)
+      store.commit('setFullScreen', false)
     }
 
     function togglePlay() {
